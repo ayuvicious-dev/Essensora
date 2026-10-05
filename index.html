@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Essensora</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5f7fa8">
+<meta name="description" content="Ruang tenang untuk napas sejenak saat pikiran terasa penuh.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Essensora">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fa;--card:#ffffff;--ink:#2f3f56;--soft:#6b7c93;--line:#d5deea;--blue:#5f7fa8;--blue-ink:#ffffff;--sage:#8fb0a0;--err:#b4493f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b2431;--card:#253144;--ink:#e8eef6;--soft:#9fb0c6;--line:#37465c;--blue:#86a6d1;--blue-ink:#14202f;--sage:#8fb0a0;--err:#f09a90}}
+:root[data-theme="dark"]{--bg:#1b2431;--card:#253144;--ink:#e8eef6;--soft:#9fb0c6;--line:#37465c;--blue:#86a6d1;--blue-ink:#14202f;--sage:#8fb0a0;--err:#f09a90}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;padding:20px}
+.screen{display:none;width:100%;max-width:420px;text-align:center}
+.screen.on{display:block}
+.logo{width:150px;height:auto;display:block;margin:0 auto 18px}
+h1{font-size:22px;font-weight:600;margin:0 0 6px}
+.sub{color:var(--soft);font-size:15px;line-height:1.5;margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 20px}
+label{display:block;text-align:left;font-size:14px;font-weight:600;margin:0 0 6px}
+input{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+input:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+button{font:inherit;font-size:16px;font-weight:600;border:0;border-radius:999px;padding:13px 24px;cursor:pointer}
+.main{background:var(--blue);color:var(--blue-ink);width:100%}
+.main:disabled{opacity:.6;cursor:wait}
+.alt{background:transparent;color:var(--ink);border:1px solid var(--soft)}
+.link{background:none;color:var(--blue);padding:8px;font-size:14px;text-decoration:underline;font-weight:600}
+.msgbox{min-height:20px;font-size:14px;margin:0 0 10px;color:var(--err)}
+.msgbox.ok{color:var(--sage)}
+.tip{border-top:5px solid var(--sage);min-height:130px;display:flex;flex-direction:column;justify-content:center;transition:border-color .3s}
+.tip .msg{font-size:18px;line-height:1.55}
+.breath{margin:18px auto 0;width:90px;height:90px;border-radius:50%;background:var(--sage);display:none;align-items:center;justify-content:center;color:#10231b;font-size:14px;font-weight:600}
+.breath.on{display:flex;animation:b 8s ease-in-out infinite}
+@keyframes b{0%,100%{transform:scale(.7)}50%{transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){.breath.on{animation:none}}
+.actions{margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.count{color:var(--soft);font-size:13px;margin-top:14px;min-height:18px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.top img{height:34px;width:auto}
+.top button{padding:8px 16px;font-size:14px}
+</style>
+</head>
+<body>
+
+<section class="screen on" id="s-load"><img class="logo" src="icons/logo.png" alt="Essensora"><div class="sub">Memuat…</div></section>
+
+<section class="screen" id="s-login">
+  <img class="logo" src="icons/logo.png" alt="Essensora">
+  <h1 id="l-title">Masuk ke Essensora</h1>
+  <div class="sub" id="l-sub">Masuk untuk membuka ruang tenangmu.</div>
+  <div class="card">
+    <div class="msgbox" id="l-msg" role="alert"></div>
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="nama@email.com">
+    <label for="pass">Kata sandi</label>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="Minimal 6 karakter">
+    <button class="main" id="l-go">Masuk</button>
+    <div style="margin-top:12px">
+      <button class="link" id="l-toggle">Belum punya akun? Daftar</button><br>
+      <button class="link" id="l-reset">Lupa kata sandi?</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s-app">
+  <div class="top"><img src="icons/logo.png" alt="Essensora"><button class="alt" id="logout">Keluar</button></div>
+  <h1>Napas dulu 🌿</h1>
+  <div class="sub">Lagi overthinking? Tekan tombolnya.</div>
+  <div class="card tip" id="tip"><div class="msg" id="msg">Kamu nggak harus menyelesaikan semuanya sekarang.</div></div>
+  <div class="breath" id="breath">tarik… buang…</div>
+  <div class="actions">
+    <button class="main" style="width:auto" id="next">Kasih arahan</button>
+    <button class="alt" id="breathBtn">Napas 3x</button>
+  </div>
+  <div class="count" id="count"></div>
+</section>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* ===== ISI DENGAN CONFIG FIREBASE PROJECT "Essensora" =====
+   Firebase Console > Project settings > General > Your apps > Web app > SDK setup and configuration */
+const firebaseConfig = {
+  apiKey: "ISI_API_KEY",
+  authDomain: "ISI_PROJECT_ID.firebaseapp.com",
+  projectId: "ISI_PROJECT_ID",
+  storageBucket: "ISI_PROJECT_ID.firebasestorage.app",
+  messagingSenderId: "ISI_SENDER_ID",
+  appId: "ISI_APP_ID"
+};
+/* ========================================================== */
+
+const $ = id => document.getElementById(id);
+const show = id => { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id)); };
+const configured = !firebaseConfig.apiKey.startsWith('ISI');
+
+let auth, db, user = null, mode = 'login';
+
+function setMsg(t, ok){ const m = $('l-msg'); m.textContent = t || ''; m.className = 'msgbox' + (ok ? ' ok' : ''); }
+
+function errText(e){
+  const c = (e && e.code) || '';
+  if (c.includes('invalid-email')) return 'Format email belum benar.';
+  if (c.includes('invalid-credential') || c.includes('wrong-password') || c.includes('user-not-found')) return 'Email atau kata sandi salah.';
+  if (c.includes('email-already-in-use')) return 'Email ini sudah terdaftar. Coba masuk.';
+  if (c.includes('weak-password')) return 'Kata sandi terlalu pendek. Pakai minimal 6 karakter.';
+  if (c.includes('too-many-requests')) return 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.';
+  if (c.includes('network')) return 'Tidak ada koneksi internet. Coba lagi.';
+  if (c.includes('operation-not-allowed')) return 'Login email belum diaktifkan di Firebase Authentication.';
+  return 'Terjadi kendala. Coba lagi.';
+}
+
+function setMode(m){
+  mode = m;
+  const reg = m === 'register';
+  $('l-title').textContent = reg ? 'Buat akun Essensora' : 'Masuk ke Essensora';
+  $('l-sub').textContent = reg ? 'Daftar dengan email untuk mulai.' : 'Masuk untuk membuka ruang tenangmu.';
+  $('l-go').textContent = reg ? 'Daftar' : 'Masuk';
+  $('l-toggle').textContent = reg ? 'Sudah punya akun? Masuk' : 'Belum punya akun? Daftar';
+  $('pass').autocomplete = reg ? 'new-password' : 'current-password';
+  setMsg('');
+}
+
+if (!configured) {
+  show('s-login');
+  setMsg('Config Firebase belum diisi. Buka index.html dan isi firebaseConfig.');
+  $('l-go').disabled = true;
+} else {
+  const app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+
+  onAuthStateChanged(auth, async u => {
+    user = u;
+    if (u) {
+      show('s-app');
+      try { await setDoc(doc(db, 'users', u.uid), { email: u.email, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
+    } else {
+      show('s-login');
+    }
+  });
+
+  $('l-go').onclick = async () => {
+    const email = $('email').value.trim(), pass = $('pass').value;
+    if (!email || !pass) return setMsg('Isi email dan kata sandi dulu.');
+    $('l-go').disabled = true; setMsg('');
+    try {
+      if (mode === 'register') await createUserWithEmailAndPassword(auth, email, pass);
+      else await signInWithEmailAndPassword(auth, email, pass);
+      $('pass').value = '';
+    } catch (e) { setMsg(errText(e)); }
+    $('l-go').disabled = false;
+  };
+  $('pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('l-go').click(); });
+  $('l-toggle').onclick = () => setMode(mode === 'login' ? 'register' : 'login');
+  $('l-reset').onclick = async () => {
+    const email = $('email').value.trim();
+    if (!email) return setMsg('Isi email dulu, lalu tekan "Lupa kata sandi?".');
+    try { await sendPasswordResetEmail(auth, email); setMsg('Tautan reset sudah dikirim. Cek email kamu.', true); }
+    catch (e) { setMsg(errText(e)); }
+  };
+  $('logout').onclick = () => signOut(auth);
+}
+
+/* ===== Napas Dulu ===== */
+const tips = [
+"Kamu udah mikirin ini lama. Mau lanjut, atau tarik napas dulu 3 kali?",
+"Ini keputusan yang bisa diubah nanti. Pilih yang paling ringan dulu.",
+"Dari semua yang kamu pikirin, cuma 1 yang bisa dilakuin hari ini. Mau mulai dari yang mana?",
+"Belum ada jawabannya sekarang, dan itu nggak apa-apa. Istirahat dulu, nanti dilihat lagi.",
+"Ini pikiran, belum tentu fakta. Coba tulis satu kalimat tentang apa yang benar-benar terjadi.",
+"Kalau teman kamu ada di posisi ini, kamu bakal bilang apa ke dia?",
+"Minum air dulu, lihat sekeliling, sebut 3 benda yang kamu lihat.",
+"Tanya diri sendiri: 1 minggu lagi, ini masih sepenting sekarang?",
+"Langkah terkecil apa yang cuma butuh 5 menit? Lakukan itu aja.",
+"Kamu boleh berhenti mikir 10 menit. Masalahnya nggak akan kabur."
+];
+const colors = ['#8fb0a0', '#5f7fa8', '#a9bfd8', '#b7cdbf'];
+let last = -1, n = 0;
+$('next').onclick = () => {
+  let i; do { i = Math.floor(Math.random() * tips.length); } while (i === last);
+  last = i; n++;
+  $('msg').textContent = tips[i];
+  $('tip').style.borderTopColor = colors[n % colors.length];
+  $('count').textContent = 'Arahan ke-' + n;
+  if (user && db) updateDoc(doc(db, 'users', user.uid), { arahanCount: increment(1) }).catch(() => {});
+};
+$('breathBtn').onclick = () => $('breath').classList.toggle('on');
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
