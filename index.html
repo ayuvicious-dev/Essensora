@@ -24,6 +24,11 @@ html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;display:flex;padding:20px}
 .screen{display:none;width:100%;max-width:420px;text-align:center;margin:auto}
 .screen.on{display:block}
+#s-load.on{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh}
+.ld-logo{width:128px;height:128px;border-radius:32px;margin-bottom:28px}
+.ld-bar{width:200px;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.ld-bar i{display:block;height:100%;width:0;background:var(--blue);border-radius:99px;transition:width .25s ease-out}
+.ld-pct{margin-top:10px;font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
 .logo{width:150px;height:auto;display:block;margin:0 auto 18px}
 h1{font-size:22px;font-weight:600;margin:0 0 6px}
 .sub{color:var(--soft);font-size:15px;line-height:1.5;margin-bottom:22px}
@@ -92,6 +97,14 @@ textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .ico.fav.on svg{fill:currentColor}
 .napas{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;z-index:35;text-align:center}
 .napas.on{display:flex}
+.n-x,.cover-x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;width:44px;height:44px;padding:0;margin:0;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.n-x svg,.cover-x svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.cover-x{display:none}
+body.cover .cover-x{display:flex}
+body.cover #s-app{position:fixed;inset:0;z-index:34;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+body.cover #s-app>*:not(.cover-x){width:100%;max-width:420px}
+.tip{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.tip:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .orb{width:160px;height:160px;border-radius:50%;background:var(--sage);transform:scale(.7);transition-property:transform;transition-timing-function:ease-in-out}
 #n-label{font-size:20px;font-weight:600;max-width:300px;line-height:1.4}
 
@@ -102,16 +115,44 @@ textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 body.viewing{padding-top:64px}
 .tag{font-size:12px;color:var(--soft)}
 
+.selbar{position:sticky;top:0;z-index:2;background:var(--card);padding:0 0 8px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+.selrow{display:flex;justify-content:space-between;align-items:center;min-height:36px}
+#sel-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+#sel-tools[hidden]{display:none}
+.selall{display:flex;align-items:center;gap:10px;margin:0;font-size:14px;cursor:pointer}
+input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;flex-shrink:0;accent-color:var(--blue)}
+#sel-del{width:auto;padding:9px 18px;font-size:14px;background:var(--err);color:var(--bg)}
+#sel-del:disabled{opacity:.45;cursor:default}
+.crow.pick{cursor:pointer;justify-content:flex-start;gap:12px}
 #set-title.adm{cursor:pointer;user-select:none}
 .chev{display:inline-block;margin-left:6px;vertical-align:middle;transition:transform .2s}
-.chev[hidden]{display:none}
+.chev,.chev[hidden]{display:none!important}
 .chev svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #set-title.open .chev{transform:rotate(180deg)}
 </style>
 </head>
 <body>
 
-<section class="screen on" id="s-load"><img class="logo" src="icons/logo.png" alt="Essensora"><div class="sub">Memuat…</div></section>
+<section class="screen on" id="s-load" aria-label="Memuat Essensora">
+  <img class="ld-logo" alt="" src="data:image/webp;base64,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">
+  <div class="ld-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="ld-fill"></i></div>
+  <div class="ld-pct" id="ld-pct">0%</div>
+</section>
+<script>
+(function(){
+  var fill = document.getElementById('ld-fill'), pct = document.getElementById('ld-pct'), bar = fill.parentNode, v = 0, cap = 30, t = null;
+  function draw(){ var r = Math.round(v); fill.style.width = v + '%'; pct.textContent = r + '%'; bar.setAttribute('aria-valuenow', r); }
+  function tick(){ v += Math.max((cap - v) * 0.06, 0.05); if (v > cap) v = cap; draw(); }
+  function run(){ if (t) clearInterval(t); t = setInterval(tick, 120); }
+  window.__ld = {
+    stage: function(floor, c){ if (floor > v) v = floor; cap = c; draw(); run(); },
+    finish: function(cb){ if (t) { clearInterval(t); t = null; } v = 100; draw(); setTimeout(cb || function(){}, 400); },
+    reset: function(){ v = 0; cap = 30; draw(); run(); },
+    stop: function(){ if (t) { clearInterval(t); t = null; } }
+  };
+  draw(); run();
+})();
+</script>
 
 <section class="screen" id="s-login">
   <img class="logo" src="icons/logo.png" alt="Essensora">
@@ -132,11 +173,11 @@ body.viewing{padding-top:64px}
 </section>
 
 <section class="screen pad" id="s-app">
+  <button class="cover-x" id="cover-x" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <h1>Napas dulu</h1>
-  <div class="sub">Lagi overthinking? Tekan tombolnya.</div>
-  <div class="card tip" id="tip"><div class="msg" id="msg">Kamu nggak harus menyelesaikan semuanya sekarang.</div></div>
+  <div class="sub">Lagi overthinking? Ketuk kotaknya untuk arahan lain.</div>
+  <div class="card tip" id="tip" role="button" tabindex="0" aria-label="Ketuk untuk arahan lain"><div class="msg" id="msg">Kamu nggak harus menyelesaikan semuanya sekarang.</div></div>
   <div class="actions">
-    <button class="main" style="width:auto" id="next">Kasih arahan</button>
     <button class="alt" id="breathBtn">Napas 3x</button>
   </div>
   <div class="count" id="count"></div>
@@ -146,7 +187,18 @@ body.viewing{padding-top:64px}
   <h1 style="margin-bottom:18px">Daftar arahan</h1>
   <div class="card">
     <div class="seg" style="margin-bottom:12px"><button data-f="all" class="sel">Semua</button><button data-f="fav">Favorit</button></div>
+    <div class="selbar">
+      <div class="selrow"><span class="tag" id="sel-info"></span><button class="link" id="sel-toggle">Pilih</button></div>
+      <div id="sel-tools" hidden><label class="selall"><input type="checkbox" id="sel-all"> Pilih semua</label><button class="main" id="sel-del">Hapus</button></div>
+    </div>
     <div id="arahan-list"></div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h2 style="font-size:15px;margin:0 0 6px">Impor &amp; ekspor Word</h2>
+    <div class="sub" style="margin-bottom:12px">Tambah banyak arahan sekaligus dari file .docx (satu baris = satu arahan), atau ekspor daftar sebagai cadangan untuk dipakai di akun lain.</div>
+    <div class="row2" style="margin-top:0"><button class="alt" id="imp-tpl">Unduh template</button><button class="main" id="imp-go">Pilih file Word</button></div>
+    <button class="alt" id="exp-go" style="width:100%;margin-top:10px">Ekspor daftar arahan</button>
+    <input type="file" id="imp-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
   </div>
   <button class="alt" id="reset-list" style="width:100%">Kembalikan ke bawaan</button>
 </section>
@@ -234,9 +286,12 @@ const firebaseConfig = {
 };
 /* ========================================================== */
 
+__ld.stage(35, 55);
 const $ = id => document.getElementById(id);
+const loading = () => $('s-load').classList.contains('on');
 let cur = 's-app';
 const show = id => {
+  if (id !== 's-load') __ld.stop();
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
   $('nav').classList.toggle('on', ['s-app', 's-list', 's-jurnal', 's-set'].includes(id));
   $('tab-list').classList.toggle('act', id === 's-list');
@@ -283,23 +338,32 @@ if (!configured) {
   auth = getAuth(app);
   db = getFirestore(app);
 
+  let welcomed = false;
   onAuthStateChanged(auth, async u => {
     user = u;
     if (u) {
+      if (!loading()) { __ld.reset(); show('s-load'); }
+      __ld.stage(60, 90);
       targetUid = u.uid; isAdmin = false;
       list = []; fav = []; jurnal = []; renderList(); renderJurnal();
-      show('s-app');
-      $('set-email').textContent = u.email;
-      try { isAdmin = (await getDoc(doc(db, 'admins', u.uid))).exists(); } catch (e) {}
-      syncAdminUI();
-      $('set-role').textContent = isAdmin ? 'Admin' : '';
-      try { await loadData(u.uid, u.email); } catch (e) { list = tips.slice(); }
-      try { await setDoc(doc(db, 'users', u.uid), { email: u.email, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
-      afterLoad();
+      const work = (async () => {
+        $('set-email').textContent = u.email;
+        try { isAdmin = (await getDoc(doc(db, 'admins', u.uid))).exists(); } catch (e) {}
+        syncAdminUI();
+        $('set-role').textContent = isAdmin ? 'Admin' : '';
+        try { await loadData(u.uid, u.email); } catch (e) { list = tips.slice(); }
+        try { await setDoc(doc(db, 'users', u.uid), { email: u.email, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
+        afterLoad();
+      })();
+      await Promise.race([work, new Promise(r => setTimeout(r, 12000))]);
+      if (!welcomed) { welcomed = true; document.body.classList.add('cover'); }
+      await new Promise(r => __ld.finish(r));
+      if (user === u) show('s-app');
     } else {
-      isAdmin = false; targetUid = null; adminOpen = false;
+      isAdmin = false; targetUid = null; adminOpen = false; welcomed = false; document.body.classList.remove('cover');
       document.body.classList.remove('viewing'); $('viewbar').hidden = true; syncAdminUI();
-      list = tips.slice(); fav = []; jurnal = []; renderList(); renderJurnal(); closeModal(); closeJ(); stopNapas(); show('s-login');
+      list = tips.slice(); fav = []; jurnal = []; renderList(); renderJurnal(); closeModal(); closeJ(); stopNapas();
+      if (loading()) __ld.finish(() => show('s-login')); else show('s-login');
     }
   });
 
@@ -341,7 +405,7 @@ const tips = [
 const colors = ['#8fb0a0', '#5f7fa8', '#a9bfd8', '#b7cdbf'];
 let list = tips.slice(), fav = [], jurnal = [], filt = 'all';
 let last = -1, n = 0;
-$('next').onclick = () => {
+const nextTip = () => {
   const p = list;
   if (!p.length) { $('msg').textContent = 'Belum ada arahan. Tambah lewat tombol + atau kembalikan ke bawaan di halaman Arahan.'; return; }
   let i; do { i = Math.floor(Math.random() * p.length); } while (i === last && p.length > 1);
@@ -351,6 +415,10 @@ $('next').onclick = () => {
   $('count').textContent = 'Arahan ke-' + n;
   if (user && db) updateDoc(doc(db, 'users', user.uid), { arahanCount: increment(1) }).catch(() => {});
 };
+
+$('tip').onclick = nextTip;
+$('tip').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextTip(); } });
+$('cover-x').onclick = () => document.body.classList.remove('cover');
 
 /* ===== Navigasi, pop up, daftar arahan ===== */
 let tt;
@@ -397,7 +465,6 @@ $('m-save').onclick = async () => {
   const t = ta.value.trim(), err = $('m-err');
   if (!t) { err.textContent = 'Tulis dulu arahannya.'; return; }
   if (list.some((x, i) => x === t && i !== editIndex)) { err.textContent = 'Arahan ini sudah ada.'; return; }
-  if (editIndex < 0 && list.length >= 50) { err.textContent = 'Maksimal 50 arahan. Hapus satu dulu di halaman Arahan.'; return; }
   $('m-save').disabled = true; err.textContent = '';
   const pl = list.slice(), pf = fav.slice();
   if (editIndex >= 0) { const old = list[editIndex]; list[editIndex] = t; fav = fav.map(x => x === old ? t : x); }
@@ -413,6 +480,20 @@ document.querySelectorAll('[data-f]').forEach(b => b.onclick = () => {
   document.querySelectorAll('[data-f]').forEach(x => x.classList.toggle('sel', x === b));
   renderList();
 });
+let selMode = false; const sel = new Set();
+function visibleItems(){ return list.filter(t => filt !== 'fav' || fav.includes(t)); }
+function syncSel(){
+  const vis = visibleItems();
+  if (selMode && !list.length) selMode = false;
+  for (const t of [...sel]) if (!vis.includes(t)) sel.delete(t);
+  $('sel-toggle').textContent = selMode ? 'Selesai' : 'Pilih';
+  $('sel-toggle').hidden = !list.length;
+  $('sel-tools').hidden = !selMode;
+  $('sel-info').textContent = selMode ? (sel.size ? sel.size + ' dipilih' : 'Ketuk arahan untuk memilih') : (list.length ? list.length + ' arahan' : '');
+  $('sel-all').checked = vis.length > 0 && vis.every(t => sel.has(t));
+  $('sel-del').disabled = !sel.size;
+  $('sel-del').textContent = sel.size ? 'Hapus (' + sel.size + ')' : 'Hapus';
+}
 function renderList(){
   const box = $('arahan-list'); box.textContent = '';
   let shown = 0;
@@ -422,6 +503,12 @@ function renderList(){
     shown++;
     const row = document.createElement('div'); row.className = 'crow';
     const sp = document.createElement('span'); sp.textContent = t;
+    if (selMode) {
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = sel.has(t); cb.setAttribute('aria-label', 'Pilih arahan');
+      row.classList.add('pick'); row.append(cb, sp);
+      row.onclick = ev => { ev.preventDefault(); sel.has(t) ? sel.delete(t) : sel.add(t); renderList(); };
+      box.appendChild(row); return;
+    }
     const acts = document.createElement('div'); acts.className = 'acts';
     const bf = iconBtn('fav' + (isFav ? ' on' : ''), isFav ? 'Hapus dari favorit' : 'Tandai favorit', ICON.heart, async () => {
       const pf = fav.slice();
@@ -443,14 +530,156 @@ function renderList(){
     d.textContent = filt === 'fav' ? 'Belum ada favorit. Ketuk simbol hati pada sebuah arahan.' : 'Belum ada arahan. Tekan tombol + untuk menambah.';
     box.appendChild(d);
   }
+  syncSel();
 }
 renderList();
+
+$('sel-toggle').onclick = () => { selMode = !selMode; sel.clear(); renderList(); };
+$('sel-all').onchange = e => {
+  const vis = visibleItems();
+  if (e.target.checked) vis.forEach(t => sel.add(t)); else vis.forEach(t => sel.delete(t));
+  renderList();
+};
+$('sel-del').onclick = async () => {
+  if (!user || !sel.size) return;
+  const n = sel.size;
+  if (!confirm('Hapus ' + n + ' arahan terpilih? Tindakan ini tidak bisa dibatalkan.')) return;
+  const pl = list.slice(), pf = fav.slice();
+  list = list.filter(x => !sel.has(x)); fav = fav.filter(x => list.includes(x));
+  $('sel-del').disabled = true;
+  try { await persist(); sel.clear(); selMode = false; renderList(); toast(n + ' arahan dihapus'); }
+  catch (e) { list = pl; fav = pf; renderList(); toast(errMsg(e)); }
+};
 
 $('reset-list').onclick = async () => {
   if (!confirm('Kembalikan semua arahan ke bawaan? Perubahan dan arahan buatanmu akan hilang.')) return;
   const pl = list.slice(), pf = fav.slice(); list = tips.slice(); fav = fav.filter(x => list.includes(x));
   try { if (user) await persist(); renderList(); toast('Dikembalikan ke bawaan'); }
   catch (e) { list = pl; fav = pf; renderList(); toast('Gagal mengembalikan'); }
+};
+
+/* --- impor arahan dari Word (.docx) + template --- */
+const CRC_T = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b){ let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC_T[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files){ /* files: [[nama, string]] , tanpa kompresi */
+  const enc = new TextEncoder(), parts = [], cd = []; let off = 0;
+  for (const [name, text] of files) {
+    const nb = enc.encode(name), db = enc.encode(text), crc = crc32(db);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, db.length, true); lh.setUint32(22, db.length, true); lh.setUint16(26, nb.length, true);
+    parts.push(new Uint8Array(lh.buffer), nb, db);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+    ch.setUint32(16, crc, true); ch.setUint32(20, db.length, true); ch.setUint32(24, db.length, true); ch.setUint16(28, nb.length, true); ch.setUint32(42, off, true);
+    cd.push(new Uint8Array(ch.buffer), nb);
+    off += 30 + nb.length + db.length;
+  }
+  const cdSize = cd.reduce((s, x) => s + x.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cdSize, true); end.setUint32(16, off, true);
+  return new Blob([...parts, ...cd, new Uint8Array(end.buffer)], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+}
+async function unzipEntry(buf, wanted){
+  const dv = new DataView(buf), u8 = new Uint8Array(buf);
+  let e = -1;
+  for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { e = i; break; }
+  if (e < 0) throw new Error('bukan zip');
+  let p = dv.getUint32(e + 16, true); const n = dv.getUint16(e + 10, true);
+  for (let k = 0; k < n; k++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break;
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+    const nl = dv.getUint16(p + 28, true), xl = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true);
+    const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nl));
+    if (name === wanted) {
+      const start = lo + 30 + dv.getUint16(lo + 26, true) + dv.getUint16(lo + 28, true);
+      const data = u8.subarray(start, start + csize);
+      if (method === 0) return new TextDecoder().decode(data);
+      if (method !== 8) throw new Error('kompresi tidak didukung');
+      if (typeof DecompressionStream === 'undefined') throw new Error('browser lama');
+      const out = await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer();
+      return new TextDecoder().decode(out);
+    }
+    p += 46 + nl + xl + cl;
+  }
+  throw new Error('document.xml tidak ada');
+}
+function cleanLine(s){ return s.replace(/\s+/g, ' ').trim().replace(/^(\d{1,3}[.)]|[-•*–])\s+/, '').trim(); }
+function paragraphsFromXml(xml){
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  if (doc.getElementsByTagName('parsererror').length) throw new Error('xml rusak');
+  const out = [];
+  for (const p of doc.getElementsByTagNameNS('*', 'p')) {
+    let t = '';
+    for (const el of p.getElementsByTagNameNS('*', '*')) {
+      const n = el.localName;
+      if (n === 't') t += el.textContent; else if (n === 'tab' || n === 'br' || n === 'cr') t += ' ';
+    }
+    const c = cleanLine(t);
+    if (c && !c.startsWith('#')) out.push(c);
+  }
+  return out;
+}
+const readDocx = async file => paragraphsFromXml(await unzipEntry(await file.arrayBuffer(), 'word/document.xml'));
+
+const xe = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const P = (t, o) => '<w:p><w:r>' + (o ? '<w:rPr>' + o + '</w:rPr>' : '') + '<w:t xml:space="preserve">' + xe(t) + '</w:t></w:r></w:p>';
+function templateDocx(){
+  return docxBlob([
+    P('# Template Impor Arahan Essensora', '<w:b/><w:sz w:val="32"/>'),
+    P('# Baris yang diawali tanda # tidak ikut diimpor, jadi boleh dihapus atau dibiarkan.', '<w:i/><w:color w:val="666666"/>'),
+    P('# Tulis satu arahan per baris (tekan Enter untuk arahan berikutnya). Maksimal 160 karakter per arahan.', '<w:i/><w:color w:val="666666"/>'),
+    P('# Nomor atau tanda poin di awal baris akan dibuang otomatis. Arahan yang sudah ada akan dilewati.', '<w:i/><w:color w:val="666666"/>'),
+    P('# Hapus tiga contoh di bawah ini, lalu ganti dengan arahanmu.', '<w:i/><w:color w:val="666666"/>'),
+    P('Aku sudah berusaha, cukup untuk hari ini.'),
+    P('Tarik napas pelan, hembuskan lebih panjang.'),
+    P('Pikiran bukan fakta; aku boleh menunggu sebelum menanggapinya.')
+  ].join(''));
+}
+function docxBlob(body){
+  const W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+  return makeZip([
+    ['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
+    ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
+    ['word/document.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ' + W + '><w:body>' + body + '</w:body></w:document>']
+  ]);
+}
+$('imp-tpl').onclick = () => {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(templateDocx()); a.download = 'template-arahan-essensora.docx';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+};
+$('exp-go').onclick = () => {
+  if (!list.length) { toast('Belum ada arahan untuk diekspor'); return; }
+  const grey = '<w:i/><w:color w:val="666666"/>', d = new Date().toISOString().slice(0, 10);
+  const body = P('# Cadangan arahan Essensora (' + d + ', ' + list.length + ' arahan)', '<w:b/>') +
+    P('# Untuk memulihkan: di akun tujuan buka halaman Arahan > Pilih file Word, lalu pilih file ini.', grey) +
+    list.map(t => P(t)).join('');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(docxBlob(body)); a.download = 'arahan-essensora-' + d + '.docx';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast(list.length + ' arahan diekspor');
+};
+$('imp-go').onclick = () => { if (user) $('imp-file').click(); };
+$('imp-file').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f || !user) return;
+  if (!/\.docx$/i.test(f.name)) { alert('Pilih file Word berformat .docx. Untuk file .doc lama, buka di Word lalu Simpan Sebagai .docx.'); return; }
+  let items;
+  try { items = await readDocx(f); }
+  catch (err) { console.error(err); alert('File tidak bisa dibaca. Pastikan file .docx tidak rusak, atau gunakan template.'); return; }
+  const seen = new Set(list), add = []; let dup = 0, long = 0;
+  for (const t of items) {
+    if (t.length > 160) { long++; continue; }
+    if (seen.has(t)) { dup++; continue; }
+    seen.add(t); add.push(t);
+  }
+  const skip = [dup && dup + ' sudah ada', long && long + ' lebih dari 160 karakter'].filter(Boolean).join(', ');
+  if (!add.length) { alert('Tidak ada arahan baru yang bisa diimpor.' + (skip ? '\nDilewati: ' + skip + '.' : '')); return; }
+  if (!confirm('Impor ' + add.length + ' arahan baru?' + (skip ? '\nDilewati: ' + skip + '.' : ''))) return;
+  const pl = list.slice();
+  list = list.concat(add);
+  try { await persist(); renderList(); toast(add.length + ' arahan diimpor'); }
+  catch (err) { list = pl; renderList(); toast(errMsg(err)); }
 };
 
 /* --- jurnal --- */
@@ -628,7 +857,7 @@ function startNapas(){
 $('breathBtn').onclick = startNapas;
 $('n-close').onclick = stopNapas;
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeJ(); stopNapas(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { const nOn = nap.classList.contains('on'); closeModal(); closeJ(); stopNapas(); if (!nOn) document.body.classList.remove('cover'); } });
 
 function applyTheme(m){
   const r = document.documentElement;
