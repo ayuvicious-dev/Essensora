@@ -60,6 +60,14 @@ textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(
 textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:420px;margin:0 auto;display:none;grid-template-columns:1fr 1fr 76px 1fr 1fr;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:8px;box-shadow:0 8px 24px rgba(20,32,50,.14);z-index:20}
 .nav.on{display:grid}
+.nav{transition:transform .25s ease,visibility 0s}
+body.nav-hidden .nav{transform:translateY(calc(100% + 50px));visibility:hidden;pointer-events:none;transition:transform .25s ease,visibility 0s .25s}
+.fabslot{position:relative}
+.nav-hide{position:absolute;left:50%;bottom:-22px;transform:translateX(-50%);width:40px;height:20px;padding:0;margin:0;border:0;border-radius:10px;background:none;color:var(--soft);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.nav-hide svg,.nav-show svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.nav-show{position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:56px;height:24px;padding:0;margin:0;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:0 4px 12px rgba(20,32,50,.12);color:var(--soft);display:none;align-items:center;justify-content:center;z-index:21;-webkit-tap-highlight-color:transparent}
+body.nav-hidden .nav.on~.nav-show{display:flex}
+body.cover .nav-show{display:none!important}
 .tab{background:none;color:var(--soft);display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:16px;font-size:11.5px;font-weight:700}
 .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tab.act{color:var(--blue);background:color-mix(in srgb,var(--blue) 14%,transparent)}
@@ -97,11 +105,12 @@ textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .ico.fav.on svg{fill:currentColor}
 .napas{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;z-index:35;text-align:center}
 .napas.on{display:flex}
-.n-x,.cover-x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;width:44px;height:44px;padding:0;margin:0;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.n-x,.cover-x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;width:44px;height:44px;padding:0;margin:0;border-radius:50%;background:none;border:0;box-shadow:none;color:var(--soft);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .n-x svg,.cover-x svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 .cover-x{display:none}
 body.cover .cover-x{display:flex}
-body.cover #s-app{position:fixed;inset:0;z-index:34;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+body.cover .nav{display:none!important}
+body.cover #s-app{position:fixed;inset:0;width:auto;max-width:none;margin:0;z-index:34;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
 body.cover #s-app>*:not(.cover-x){width:100%;max-width:420px}
 .tip{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
 .tip:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
@@ -174,13 +183,10 @@ input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;flex-shrink:0;acc
 
 <section class="screen pad" id="s-app">
   <button class="cover-x" id="cover-x" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  <h1>Napas dulu</h1>
-  <div class="sub">Lagi overthinking? Ketuk kotaknya untuk arahan lain.</div>
   <div class="card tip" id="tip" role="button" tabindex="0" aria-label="Ketuk untuk arahan lain"><div class="msg" id="msg">Kamu nggak harus menyelesaikan semuanya sekarang.</div></div>
   <div class="actions">
     <button class="alt" id="breathBtn">Napas 3x</button>
   </div>
-  <div class="count" id="count"></div>
 </section>
 
 <section class="screen pad set" id="s-list">
@@ -234,10 +240,11 @@ input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;flex-shrink:0;acc
 <nav class="nav" id="nav" aria-label="Menu utama">
   <button class="tab act" id="tab-app"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
   <button class="tab" id="tab-list"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Arahan</span></button>
-  <div class="fabslot"><button class="fab" id="fab" aria-label="Tambah arahan sendiri"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
+  <div class="fabslot"><button class="fab" id="fab" aria-label="Tambah arahan sendiri"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button class="nav-hide" id="nav-hide" aria-label="Sembunyikan bilah bawah"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
   <button class="tab" id="tab-jurnal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Jurnal</span></button>
   <button class="tab" id="tab-set"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Setting</span></button>
 </nav>
+<button class="nav-show" id="nav-show" aria-label="Tampilkan bilah bawah"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
 
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
   <div class="dlg">
@@ -289,6 +296,10 @@ const firebaseConfig = {
 __ld.stage(35, 55);
 const $ = id => document.getElementById(id);
 const loading = () => $('s-load').classList.contains('on');
+const setNav = hide => { document.body.classList.toggle('nav-hidden', hide); try { localStorage.setItem('ess-nav', hide ? 'hidden' : 'shown'); } catch (e) {} };
+try { if (localStorage.getItem('ess-nav') === 'hidden') document.body.classList.add('nav-hidden'); } catch (e) {}
+$('nav-hide').onclick = () => setNav(true);
+$('nav-show').onclick = () => setNav(false);
 let cur = 's-app';
 const show = id => {
   if (id !== 's-load') __ld.stop();
@@ -412,10 +423,15 @@ const nextTip = () => {
   last = i; n++;
   $('msg').textContent = p[i];
   $('tip').style.borderTopColor = colors[n % colors.length];
-  $('count').textContent = 'Arahan ke-' + n;
   if (user && db) updateDoc(doc(db, 'users', user.uid), { arahanCount: increment(1) }).catch(() => {});
 };
 
+function randomTip(){
+  if (!list.length) return;
+  let i; do { i = Math.floor(Math.random() * list.length); } while (i === last && list.length > 1);
+  last = i; $('msg').textContent = list[i];
+  $('tip').style.borderTopColor = colors[Math.floor(Math.random() * colors.length)];
+}
 $('tip').onclick = nextTip;
 $('tip').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextTip(); } });
 $('cover-x').onclick = () => document.body.classList.remove('cover');
@@ -443,7 +459,7 @@ function errMsg(e){
 const saveDoc = f => setDoc(doc(db, 'users', targetUid), f, { merge: true });
 async function persist(){ await saveDoc({ arahan: list, favorit: fav }); last = -1; }
 
-$('tab-app').onclick = () => show('s-app');
+$('tab-app').onclick = () => { if (!$('s-app').classList.contains('on')) randomTip(); show('s-app'); };
 $('tab-list').onclick = () => show('s-list');
 $('tab-jurnal').onclick = () => show('s-jurnal');
 $('tab-set').onclick = () => { adminOpen = false; show('s-set'); syncAdminUI(); };
@@ -773,8 +789,8 @@ async function loadData(uid, email){
   jurnal = Array.isArray(d.jurnal) ? d.jurnal : [];
 }
 function afterLoad(){
-  last = -1; n = 0; $('count').textContent = '';
-  $('msg').textContent = list.length ? DEFAULT_MSG : EMPTY_MSG;
+  last = -1; n = 0;
+  if (list.length) randomTip(); else $('msg').textContent = EMPTY_MSG;
   renderList(); renderJurnal();
 }
 async function loadUsers(){
