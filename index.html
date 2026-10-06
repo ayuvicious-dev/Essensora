@@ -108,6 +108,13 @@ body.cover .nav-show{display:none!important}
 .n-x,.cover-x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;width:44px;height:44px;padding:0;margin:0;border-radius:50%;background:none;border:0;box-shadow:none;color:var(--soft);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .n-x svg,.cover-x svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 .cover-x{display:none}
+.n-m{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:14px;width:44px;height:44px;padding:0;margin:0;border-radius:50%;background:none;border:0;box-shadow:none;color:var(--soft);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.n-m[hidden]{display:none}
+.n-m svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.n-m .s-off{display:none}
+.n-m.off .s-on{display:none}
+.n-m.off .s-off{display:block}
+.n-m:not(.off){color:var(--blue)}
 body.cover .cover-x{display:flex}
 body.cover .nav{display:none!important}
 body.cover #s-app{position:fixed;inset:0;width:auto;max-width:none;margin:0;z-index:34;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
@@ -124,6 +131,11 @@ body.cover #s-app>*:not(.cover-x){width:100%;max-width:420px}
 #latmenu{z-index:35;overflow-y:auto;justify-content:flex-start}
 #latmenu .lm-wrap{margin:auto 0;padding:64px 0 28px;width:100%;max-width:340px}
 .lm-item[hidden]{display:none}
+.lm-title{font-size:18px;font-weight:700;margin:0 0 14px;color:var(--ink)}
+.lm-item{position:relative}
+#playBtn{display:inline-flex;align-items:center;gap:8px}
+#playBtn svg{width:14px;height:14px;fill:currentColor;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.lm-item.done>*{opacity:.4}
 .lm-pager{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:14px}
 .lm-nav{width:44px;height:44px;padding:0;margin:0;border-radius:50%;background:none;border:0;color:var(--soft);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .lm-nav svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -140,7 +152,7 @@ body.cover #s-app>*:not(.cover-x){width:100%;max-width:420px}
 #lat-text{font-size:20px;font-weight:600;max-width:320px;line-height:1.45}
 #lat-ta{width:100%;max-width:380px;min-height:160px;transition:opacity 1.2s ease,transform 1.2s ease,filter 1.2s ease}
 #lat-ta.go{opacity:0;transform:translateY(-24px) scale(.97);filter:blur(6px)}
-.lat-note{font-size:13px;color:var(--soft);margin-top:-12px}
+.lat-note{font-size:13px;color:var(--soft);margin-top:-12px;max-width:300px;line-height:1.4}
 .orb{width:160px;height:160px;border-radius:50%;background:var(--sage);transform:scale(.7);transition-property:transform;transition-timing-function:ease-in-out}
 #n-label{font-size:20px;font-weight:600;max-width:300px;line-height:1.4}
 
@@ -213,6 +225,7 @@ input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;flex-shrink:0;acc
   <div class="card tip" id="tip" role="button" tabindex="0" aria-label="Ketuk untuk arahan lain"><div class="msg" id="msg">Kamu nggak harus menyelesaikan semuanya sekarang.</div></div>
   <div class="actions">
     <button class="alt" id="breathBtn">Latihan</button>
+    <button class="alt" id="playBtn" aria-label="Putar semua latihan fisik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>Putar fisik</button>
   </div>
 </section>
 
@@ -298,18 +311,31 @@ input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;flex-shrink:0;acc
 <div class="napas" id="latmenu" role="dialog" aria-modal="true" aria-label="Pilih latihan">
   <button class="n-x" id="lm-x" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <div class="lm-wrap">
+  <div class="lm-title" id="lm-title" aria-live="polite"></div>
   <div class="lm-grid">
     <button class="lm-item" data-l="napas"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg></span><b>Napas</b><span>40 detik</span></button>
-    <button class="lm-item" data-l="ground"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Grounding</b><span>2 menit</span></button>
+    <button class="lm-item" data-l="n478"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><b>Napas 4-7-8</b><span>1 menit</span></button>
+    <button class="lm-item" data-l="kotak"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/></svg></span><b>Napas kotak</b><span>50 detik</span></button>
+    <button class="lm-item" data-l="perut"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span><b>Napas perut</b><span>40 detik</span></button>
     <button class="lm-item" data-l="otot"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 7v6M6.5 10.5L12 9l5.5 1.5M9.5 21l2.5-8 2.5 8"/></svg></span><b>Relaksasi</b><span>1 menit</span></button>
+    <button class="lm-item" data-l="scan"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg></span><b>Pindai tubuh</b><span>1 menit</span></button>
+    <button class="lm-item" data-l="ground"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Grounding</b><span>2 menit</span></button>
+    <button class="lm-item" data-l="warna"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.8-1.7 1.7-1.7H16c3 0 6-2.5 6-6 0-4.9-4.5-8.4-10-8.4z"/></svg></span><b>Cari warna</b><span>1 menit</span></button>
+    <button class="lm-item" data-l="dengar"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"/></svg></span><b>Dengar suara</b><span>50 detik</span></button>
+    <button class="lm-item" data-l="minum"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.7l5.7 5.6a8 8 0 1 1-11.4 0z"/></svg></span><b>Minum air</b><span>40 detik</span></button>
+    <button class="lm-item" data-l="mata"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></span><b>Istirahat mata</b><span>45 detik</span></button>
+    <button class="lm-item" data-l="aman"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span><b>Tempat aman</b><span>1 menit</span></button>
     <button class="lm-item" data-l="tulis"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span><b>Tulis &amp; lepas</b><span>Tidak disimpan</span></button>
+    <button class="lm-item" data-l="syukur"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><b>Syukur</b><span>1 menit</span></button>
+    <button class="lm-item" data-l="afirmasi"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg></span><b>Afirmasi</b><span>1 menit</span></button>
+    <button class="lm-item" data-l="peluk"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></span><b>Peluk diri</b><span>50 detik</span></button>
+    <button class="lm-item" data-l="pijat"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span><b>Pijat</b><span>1 menit</span></button>
+    <button class="lm-item" data-l="tangan"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span><b>Tangan &amp; jari</b><span>40 detik</span></button>
     <button class="lm-item" data-l="leher"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg></span><b>Leher &amp; bahu</b><span>40 detik</span></button>
+    <button class="lm-item" data-l="punggung"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span><b>Punggung</b><span>40 detik</span></button>
     <button class="lm-item" data-l="regang"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span><b>Regangan</b><span>45 detik</span></button>
     <button class="lm-item" data-l="jalan"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4M4 13h4"/></svg></span><b>Jalan pelan</b><span>1 menit</span></button>
-    <button class="lm-item" data-l="pijat"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span><b>Pijat</b><span>1 menit</span></button>
     <button class="lm-item" data-l="goyang"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><b>Goyang tubuh</b><span>40 detik</span></button>
-    <button class="lm-item" data-l="tangan"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span><b>Tangan &amp; jari</b><span>40 detik</span></button>
-    <button class="lm-item" data-l="punggung"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span><b>Punggung</b><span>40 detik</span></button>
     <button class="lm-item" data-l="berdiri"><span class="lm-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 9-6-6-6 6"/><path d="M12 3v14"/><path d="M5 21h14"/></svg></span><b>Berdiri kuat</b><span>40 detik</span></button>
   </div>
   <div class="lm-pager"><button class="lm-nav" id="lm-prev" aria-label="Sebelumnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><div class="lat-dots" id="lm-dots"></div><button class="lm-nav" id="lm-next" aria-label="Berikutnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
@@ -317,12 +343,14 @@ input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;flex-shrink:0;acc
 </div>
 
 <div class="napas" id="napas" role="dialog" aria-modal="true" aria-label="Latihan napas">
+  <button class="n-m" aria-label="Matikan musik" aria-pressed="true"><svg class="s-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><svg class="s-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></svg></button>
   <div class="orb" id="orb"></div>
   <div id="n-label"></div>
   <div class="sub" id="n-count" style="margin:0"></div>
   <button class="alt" id="n-close">Tutup</button>
 </div>
 <div class="napas" id="lat" role="dialog" aria-modal="true" aria-label="Latihan">
+  <button class="n-m" aria-label="Matikan musik" aria-pressed="true"><svg class="s-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><svg class="s-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></svg></button>
   <button class="n-x" id="lat-x" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <div class="lat-dots" id="lat-sub" aria-hidden="true"></div>
   <div class="lat-big" id="lat-big"></div>
@@ -413,7 +441,7 @@ if (!configured) {
       if (!loading()) { __ld.reset(); show('s-load'); }
       __ld.stage(60, 90);
       targetUid = u.uid; isAdmin = false;
-      list = []; fav = []; jurnal = []; renderList(); renderJurnal();
+      list = []; fav = []; jurnal = []; done = []; doneDay = ''; renderList(); renderJurnal();
       const work = (async () => {
         $('set-email').textContent = u.email;
         try { isAdmin = (await getDoc(doc(db, 'admins', u.uid))).exists(); } catch (e) {}
@@ -430,7 +458,7 @@ if (!configured) {
     } else {
       isAdmin = false; targetUid = null; adminOpen = false; welcomed = false; document.body.classList.remove('cover');
       document.body.classList.remove('viewing'); $('viewbar').hidden = true; syncAdminUI();
-      list = tips.slice(); fav = []; jurnal = []; renderList(); renderJurnal(); closeModal(); closeJ(); stopNapas(); stopLat(); closeMenu();
+      list = tips.slice(); fav = []; jurnal = []; done = []; doneDay = ''; renderList(); renderJurnal(); closeModal(); closeJ(); stopNapas(); stopLat(); closeMenu();
       if (loading()) __ld.finish(() => show('s-login')); else show('s-login');
     }
   });
@@ -844,6 +872,8 @@ async function loadData(uid, email){
   list = l;
   fav = Array.isArray(d.favorit) ? d.favorit : [];
   jurnal = Array.isArray(d.jurnal) ? d.jurnal : [];
+  const sd = d.selesai;
+  if (sd && sd.hari === today() && Array.isArray(sd.ids)) { done = sd.ids.slice(); doneDay = sd.hari; } else { done = []; doneDay = ''; }
 }
 function afterLoad(){
   last = -1; n = 0;
@@ -905,18 +935,248 @@ $('nu-add').onclick = async () => {
   $('nu-add').disabled = false;
 };
 
+/* --- musik instrumental: dibuat langsung di browser (Web Audio), tanpa file audio, jadi tetap jalan offline.
+   Setiap latihan punya "lagu" sendiri: ch = urutan akor (nomor MIDI), dur = detik per akor, cut = kecerahan suara,
+   t2 = warna suara kedua, wet = gema, pk = kekerasan pad, mel = melodi (rand = acak dari skala, arp = arpeggio dari akor). --- */
+const Music = (() => {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const PROF = {
+    /* napas: sangat pelan, luas, bel jarang */
+    napas: { dur: 10, cut: 900, t2: 'triangle', wet: .65, pk: .032,
+      ch: [[48, 55, 59, 64], [45, 52, 55, 60, 64], [41, 48, 52, 57, 60], [43, 50, 52, 59, 62]],
+      mel: { mode: 'rand', sc: [72, 74, 76, 79, 81, 84], gap: [4, 8], p: .7, vol: .04, len: 4.5, type: 'sine' } },
+    /* grounding: hangat dan terang (D mayor), arpeggio lambat seperti petikan harpa */
+    ground: { dur: 8, cut: 1300, t2: 'triangle', wet: .55, pk: .03,
+      ch: [[50, 57, 61, 64, 66], [47, 54, 57, 61, 64], [43, 50, 54, 59, 62], [45, 52, 57, 62, 64]],
+      mel: { mode: 'arp', up: 12, gap: [2.2, 2.2], p: .85, vol: .05, len: 2.2, type: 'triangle' } },
+    /* relaksasi otot: dalam dan gelap, tanpa melodi, hanya dengung yang melepas */
+    otot: { dur: 12, cut: 600, t2: 'sine', wet: .7, pk: .036,
+      ch: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [38, 45, 50, 53, 57], [40, 47, 52, 55, 59]],
+      mel: null },
+    /* tulis & lepas: reflektif, petikan seperti piano di atas pad lembut */
+    tulis: { dur: 8, cut: 1100, t2: 'triangle', wet: .6, pk: .03,
+      ch: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [48, 55, 60, 64, 67], [43, 50, 55, 59, 62]],
+      mel: { mode: 'rand', sc: [69, 72, 74, 76, 79], gap: [3, 6], p: .8, vol: .05, len: 2.8, type: 'triangle' } },
+    /* leher & bahu: melayang, lembut, bel panjang */
+    leher: { dur: 9, cut: 1000, t2: 'sine', wet: .65, pk: .032,
+      ch: [[41, 48, 52, 57, 64], [38, 45, 53, 57, 64], [46, 53, 57, 62, 65], [48, 55, 60, 64, 69]],
+      mel: { mode: 'rand', sc: [72, 74, 77, 79, 81], gap: [4, 7], p: .6, vol: .04, len: 4, type: 'sine' } },
+    /* regangan: cerah dan terbuka (G mayor), arpeggio lebih cepat */
+    regang: { dur: 6, cut: 1700, t2: 'triangle', wet: .5, pk: .03,
+      ch: [[43, 50, 59, 62, 66], [40, 47, 55, 59, 64], [48, 55, 59, 64, 67], [50, 57, 62, 66, 69]],
+      mel: { mode: 'arp', up: 12, gap: [1.5, 1.5], p: .9, vol: .05, len: 1.8, type: 'triangle' } },
+    /* jalan pelan: denyut tetap sekitar 60 per menit, seperti langkah */
+    jalan: { dur: 8, cut: 1200, t2: 'triangle', wet: .45, pk: .028,
+      ch: [[48, 55, 60, 64, 67], [45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [43, 50, 55, 59, 62]],
+      mel: { mode: 'arp', up: 12, gap: [1, 1], p: 1, vol: .05, len: 1.2, type: 'triangle' } },
+    /* pijat: hangat, petikan lembut yang tidak terburu-buru */
+    pijat: { dur: 8, cut: 1200, t2: 'triangle', wet: .55, pk: .03,
+      ch: [[43, 50, 54, 59, 66], [40, 47, 52, 55, 62], [48, 55, 59, 62, 64], [50, 57, 62, 66, 71]],
+      mel: { mode: 'rand', sc: [67, 71, 74, 76, 79], gap: [2.5, 4.5], p: .8, vol: .045, len: 2.4, type: 'triangle' } },
+    /* goyang tubuh: paling ceria dan berirama (D mayor), tetap ringan */
+    goyang: { dur: 6, cut: 2000, t2: 'triangle', wet: .4, pk: .028,
+      ch: [[50, 57, 62, 66, 69], [43, 50, 59, 62, 67], [47, 54, 59, 62, 66], [45, 52, 57, 61, 64]],
+      mel: { mode: 'arp', up: 12, gap: [.6, .6], p: .8, vol: .045, len: .9, type: 'triangle' } },
+    /* tangan & jari: kotak musik, nada tinggi dan jernih */
+    tangan: { dur: 8, cut: 1400, t2: 'sine', wet: .6, pk: .026,
+      ch: [[48, 55, 59, 64, 67], [41, 48, 52, 57, 64], [45, 52, 55, 60, 67], [43, 50, 52, 59, 62]],
+      mel: { mode: 'arp', up: 24, gap: [.9, .9], p: .9, vol: .04, len: 1.6, type: 'sine' } },
+    /* punggung: rendah dan hangat seperti cello */
+    punggung: { dur: 10, cut: 800, t2: 'sawtooth', wet: .65, pk: .018,
+      ch: [[38, 45, 53, 57, 64], [46, 53, 57, 62, 65], [43, 50, 55, 58, 62], [45, 52, 57, 62, 67]],
+      mel: { mode: 'rand', sc: [62, 65, 67, 69, 72], gap: [4, 7], p: .6, vol: .04, len: 3.5, type: 'sine' } },
+    /* berdiri kuat: nada dasar C yang kokoh dan denyut rendah */
+    berdiri: { dur: 10, cut: 900, t2: 'triangle', wet: .45, pk: .034,
+      ch: [[36, 48, 55, 60, 64], [36, 48, 53, 57, 60], [36, 48, 55, 62, 67], [36, 48, 52, 59, 64]],
+      mel: { mode: 'rand', sc: [48, 55], gap: [2.5, 2.5], p: 1, vol: .06, len: 2, type: 'sine' } },
+    /* enam latihan berikut punya lapisan nada binaural halus (bin = [nada dasar Hz, selisih Hz, volume]); paling terasa dengan headphone */
+    n478: { dur: 12, cut: 700, t2: 'sine', wet: .7, pk: .034, bin: [200, 6, .035],
+      ch: [[38, 45, 53, 57, 64], [46, 53, 57, 62, 65], [41, 48, 52, 57, 64], [48, 55, 62, 67]],
+      mel: { mode: 'rand', sc: [74, 77, 81], gap: [8, 14], p: .5, vol: .03, len: 5, type: 'sine' } },
+    kotak: { dur: 16, cut: 1000, t2: 'triangle', wet: .55, pk: .03, bin: [210, 10, .03],
+      ch: [[48, 55, 59, 64, 67], [45, 52, 55, 60, 64], [41, 48, 53, 57, 60], [43, 50, 55, 59, 62]],
+      mel: { mode: 'arp', up: 12, gap: [4, 4], p: 1, vol: .05, len: 3.5, type: 'sine' } },
+    syukur: { dur: 8, cut: 1500, t2: 'triangle', wet: .55, pk: .03, bin: [220, 10, .03],
+      ch: [[45, 52, 56, 59, 64], [42, 49, 52, 57, 61], [38, 45, 50, 54, 61], [40, 47, 52, 56, 61]],
+      mel: { mode: 'rand', sc: [69, 71, 73, 76, 78], gap: [2.5, 4], p: .85, vol: .05, len: 2.6, type: 'triangle' } },
+    aman: { dur: 12, cut: 800, t2: 'sine', wet: .75, pk: .034, bin: [190, 5, .035],
+      ch: [[41, 48, 52, 57, 64], [43, 50, 57, 59, 64], [48, 55, 59, 62, 64], [38, 45, 50, 53, 57]],
+      mel: { mode: 'rand', sc: [72, 76, 79, 84], gap: [5, 9], p: .6, vol: .035, len: 5, type: 'sine' } },
+    scan: { dur: 10, cut: 750, t2: 'sine', wet: .7, pk: .036, bin: [180, 6, .035],
+      ch: [[40, 47, 52, 59, 62], [48, 55, 59, 64], [45, 52, 55, 60, 64], [50, 57, 61, 66]],
+      mel: { mode: 'rand', sc: [64, 67, 71, 74], gap: [6, 10], p: .5, vol: .03, len: 5, type: 'sine' } },
+    peluk: { dur: 9, cut: 900, t2: 'triangle', wet: .6, pk: .03, bin: [200, 8, .03],
+      ch: [[39, 46, 50, 55, 58], [36, 43, 46, 51, 55], [44, 51, 55, 58, 62], [46, 53, 58, 62, 67]],
+      mel: { mode: 'arp', up: 12, gap: [1.8, 1.8], p: .7, vol: .04, len: 2.4, type: 'sine' } },
+    /* istirahat mata: gelap, tenang, bel sangat jarang */
+    mata: { dur: 10, cut: 800, t2: 'sine', wet: .7, pk: .034,
+      ch: [[43, 50, 54, 59, 62], [40, 47, 52, 59, 66], [48, 55, 59, 62, 64], [50, 57, 62, 66, 71]],
+      mel: { mode: 'rand', sc: [67, 71, 74, 79], gap: [6, 10], p: .5, vol: .03, len: 5, type: 'sine' } },
+    /* minum air: jernih, tetesan nada tinggi seperti air */
+    minum: { dur: 8, cut: 1500, t2: 'sine', wet: .6, pk: .028,
+      ch: [[41, 48, 52, 57, 64], [38, 45, 50, 53, 60], [46, 53, 57, 62, 65], [48, 55, 60, 64, 67]],
+      mel: { mode: 'rand', sc: [76, 79, 81, 84, 88], gap: [1.2, 3], p: .7, vol: .04, len: 1.8, type: 'sine' } },
+    /* cari warna: ringan dan bermain (pentatonik C) */
+    warna: { dur: 6, cut: 1900, t2: 'triangle', wet: .45, pk: .028,
+      ch: [[48, 55, 60, 64, 67], [43, 50, 55, 59, 62], [45, 52, 57, 60, 64], [41, 48, 53, 57, 60]],
+      mel: { mode: 'arp', up: 12, gap: [.8, .8], p: .8, vol: .045, len: 1.1, type: 'triangle' } },
+    /* afirmasi: hangat dan menguatkan */
+    afirmasi: { dur: 9, cut: 1200, t2: 'triangle', wet: .65, pk: .03,
+      ch: [[38, 45, 52, 57, 61], [47, 54, 57, 61, 64], [43, 50, 54, 59, 62], [45, 52, 57, 61, 64]],
+      mel: { mode: 'rand', sc: [69, 71, 74, 76, 78], gap: [3, 6], p: .7, vol: .045, len: 3.2, type: 'sine' } },
+    /* napas perut: dalam dan lambat */
+    perut: { dur: 10, cut: 700, t2: 'sine', wet: .7, pk: .034,
+      ch: [[45, 52, 55, 60, 64], [41, 48, 52, 57, 64], [48, 55, 59, 64], [43, 50, 55, 59, 62]],
+      mel: { mode: 'rand', sc: [72, 76, 79], gap: [7, 12], p: .5, vol: .03, len: 5, type: 'sine' } },
+    /* dengar suara: luas dan lapang, memberi ruang untuk suara sekitar */
+    dengar: { dur: 10, cut: 850, t2: 'sine', wet: .8, pk: .03,
+      ch: [[38, 45, 50, 57, 62], [43, 50, 55, 62, 67], [45, 52, 57, 62, 64], [40, 47, 52, 55, 62]],
+      mel: { mode: 'rand', sc: [62, 69, 74, 81], gap: [6, 11], p: .5, vol: .03, len: 5, type: 'sine' } }
+  };
+  const AP = [0, 2, 4, 2, 1, 3];
+  const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+  let ctx = null, out = null, rev = null, wet = null, bus = null, bin = null, schedT = null, stopT = null;
+  let running = false, active = false, ci = 0, ap = 0, nextC = 0, nextM = 0, cur = [], nodes = new Set(), enabled = true;
+  let P = PROF.napas;
+  try { enabled = localStorage.getItem('ess-music') !== 'off'; } catch (e) {}
+
+  function init(){
+    if (ctx) return true;
+    if (!AC) return false;
+    try {
+      ctx = new AC();
+      out = ctx.createGain(); out.gain.value = .6;
+      const comp = ctx.createDynamicsCompressor();
+      out.connect(comp); comp.connect(ctx.destination);
+      rev = ctx.createConvolver();
+      const len = Math.floor(ctx.sampleRate * 3.2), buf = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) { const d = buf.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
+      rev.buffer = buf;
+      wet = ctx.createGain(); wet.gain.value = .6;
+      rev.connect(wet); wet.connect(out);
+      return true;
+    } catch (e) { ctx = null; return false; }
+  }
+  function osc(type, f, t0, t1, dest, detune){
+    const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; if (detune) o.detune.value = detune;
+    o.connect(dest); o.start(t0); o.stop(t1);
+    nodes.add(o); o.onended = () => nodes.delete(o);
+  }
+  function pad(m, t){
+    const g = ctx.createGain(), f = ctx.createBiquadFilter(), pk = P.pk, dur = P.dur;
+    f.type = 'lowpass'; f.frequency.value = P.cut; f.Q.value = .3;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pk, t + 3);
+    g.gain.linearRampToValueAtTime(pk, t + dur); g.gain.linearRampToValueAtTime(0, t + dur + 4);
+    g.connect(f); f.connect(bus);
+    osc('sine', hz(m), t, t + dur + 4.1, g, 4);
+    osc(P.t2, hz(m), t, t + dur + 4.1, g, -5);
+  }
+  function note(t){
+    const M = P.mel; let m;
+    if (M.mode === 'arp') m = cur[AP[ap++ % AP.length] % cur.length] + (M.up == null ? 12 : M.up);
+    else m = M.sc[Math.floor(Math.random() * M.sc.length)];
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(M.vol, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + M.len);
+    g.connect(bus);
+    osc(M.type, hz(m), t, t + M.len + .1, g);
+  }
+  function tick(){
+    if (!running) return;
+    const now = ctx.currentTime;
+    while (nextC < now + .3) {
+      cur = P.ch[ci % P.ch.length]; ci++;
+      cur.forEach(m => pad(m, Math.max(nextC, now)));
+      nextC += P.dur;
+    }
+    if (P.mel) while (nextM < now + .3) {
+      if (Math.random() < P.mel.p) note(Math.max(nextM, now + .02));
+      nextM += P.mel.gap[0] + Math.random() * (P.mel.gap[1] - P.mel.gap[0]);
+    }
+  }
+  function run(){
+    if (running || !init()) return;
+    running = true;
+    try { ctx.resume(); } catch (e) {}
+    const t = ctx.currentTime;
+    wet.gain.setTargetAtTime(P.wet, t, .1);
+    bus = ctx.createGain(); bus.gain.setValueAtTime(0, t); bus.gain.linearRampToValueAtTime(.8, t + 2.5);
+    bus.connect(out); bus.connect(rev);
+    if (P.bin && ctx.createStereoPanner) {
+      const [cf, bt, bv] = P.bin;
+      bin = ctx.createGain(); bin.gain.setValueAtTime(0, t); bin.gain.linearRampToValueAtTime(1, t + 4); bin.connect(out);
+      [[-1, cf], [1, cf + bt]].forEach(([pan, f]) => {
+        const g = ctx.createGain(); g.gain.value = bv;
+        const pn = ctx.createStereoPanner(); pn.pan.value = pan;
+        g.connect(pn); pn.connect(bin);
+        osc('sine', f, t, t + 7200, g);
+      });
+    } else bin = null;
+    ci = 0; ap = 0; cur = P.ch[0]; nextC = nextM = t + .05;
+    tick(); schedT = setInterval(tick, 100);
+  }
+  function halt(){
+    if (!running) return;
+    running = false; clearInterval(schedT);
+    const b = bus, bn = bin, ns = nodes, t = ctx.currentTime; nodes = new Set();
+    b.gain.cancelScheduledValues(t); b.gain.setValueAtTime(b.gain.value, t); b.gain.linearRampToValueAtTime(0, t + 1.2);
+    if (bn) { bn.gain.cancelScheduledValues(t); bn.gain.setValueAtTime(bn.gain.value, t); bn.gain.linearRampToValueAtTime(0, t + 1.2); }
+    stopT = setTimeout(() => {
+      ns.forEach(o => { try { o.stop(); } catch (e) {} });
+      try { b.disconnect(); } catch (e) {}
+      if (bn) { try { bn.disconnect(); } catch (e) {} }
+      if (!running) { try { ctx.suspend(); } catch (e) {} }
+    }, 1400);
+  }
+  function paint(){
+    document.querySelectorAll('.n-m').forEach(b => {
+      b.hidden = !AC; b.classList.toggle('off', !enabled);
+      b.setAttribute('aria-pressed', String(enabled)); b.setAttribute('aria-label', enabled ? 'Matikan musik' : 'Nyalakan musik');
+    });
+  }
+  function sync(){ if (active && enabled) run(); else halt(); paint(); }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) halt(); else sync(); });
+  document.querySelectorAll('.n-m').forEach(b => b.onclick = () => {
+    enabled = !enabled;
+    try { localStorage.setItem('ess-music', enabled ? 'on' : 'off'); } catch (e) {}
+    sync();
+  });
+  paint();
+  return {
+    open(kind){
+      const np = PROF[kind] || PROF.napas;
+      if (running && np !== P) halt();
+      P = np; active = true; sync();
+    },
+    close(){ active = false; sync(); }
+  };
+})();
+
+/* --- tanda selesai: tersimpan per hari, ikut tersinkron lewat akun --- */
+let done = [], doneDay = '';
+function today(){ const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function markDone(k){
+  if (!user || !k) return;
+  const t = today();
+  if (doneDay !== t) { done = []; doneDay = t; }
+  if (done.includes(k)) return;
+  done = done.concat(k);
+  renderMenu();
+  toast('Latihan ditandai selesai');
+  saveDoc({ selesai: { hari: t, ids: done } }).catch(() => {});
+}
+
 /* --- latihan napas --- */
 const nap = $('napas'), PH = [['Tarik napas pelan', 4000, 1.15], ['Tahan sebentar', 2000, 1.15], ['Buang perlahan', 6000, 0.7]];
 let ntimer = null;
-function stopNapas(){ clearTimeout(ntimer); nap.classList.remove('on'); }
+function stopNapas(){ clearTimeout(ntimer); nap.classList.remove('on'); if (!lat.classList.contains('on')) Music.close(); }
 function startNapas(){
   const orb = $('orb'), lab = $('n-label'), cnt = $('n-count');
-  nap.classList.add('on'); lab.textContent = 'Siap-siap…'; cnt.textContent = '';
+  nap.classList.add('on'); Music.open('napas'); lab.textContent = 'Siap-siap…'; cnt.textContent = '';
   orb.style.transitionDuration = '0s'; orb.style.transform = 'scale(.7)';
   let round = 1, ph = 0;
   function step(){
     if (round > 3) {
-      lab.textContent = 'Selesai. Terima kasih sudah berhenti sejenak.'; cnt.textContent = '';
+      lab.textContent = 'Selesai. Terima kasih sudah berhenti sejenak.'; cnt.textContent = ''; markDone('napas');
       orb.style.transitionDuration = '1.5s'; orb.style.transform = 'scale(.9)'; return;
     }
     const [t, ms, sc] = PH[ph];
@@ -927,14 +1187,14 @@ function startNapas(){
   }
   ntimer = setTimeout(step, 600);
 }
-$('n-close').onclick = stopNapas;
+$('n-close').onclick = leaveEx;
 
 /* --- latihan lain: grounding, relaksasi otot, tulis lalu lepaskan --- */
 const menu = $('latmenu'), lat = $('lat');
 const lv = { sub: $('lat-sub'), big: $('lat-big'), text: $('lat-text'), ta: $('lat-ta'), note: $('lat-note'), btn: $('lat-btn') };
-let lTok = 0, lTimer = null;
+let lTok = 0, lTimer = null, curKind = '', queue = null;
 function closeMenu(){ menu.classList.remove('on'); }
-function stopLat(){ lTok++; clearInterval(lTimer); lat.classList.remove('on'); lv.ta.value = ''; lv.ta.classList.remove('go'); }
+function stopLat(){ queue = null; lTok++; clearInterval(lTimer); lat.classList.remove('on'); lv.ta.value = ''; lv.ta.classList.remove('go'); if (!nap.classList.contains('on')) Music.close(); }
 const LI = {
   next: svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
   check: svg('<path d="M5 12l5 5 9-9"/>'),
@@ -943,12 +1203,20 @@ const LI = {
 function lset(o){
   lv.sub.innerHTML = o.of ? Array.from({ length: o.of }, (_, k) => '<i' + (k <= o.step ? ' class="on"' : '') + '></i>').join('') : '';
   lv.big.textContent = o.big || ''; lv.text.textContent = o.text || '';
-  lv.ta.hidden = !o.ta; lv.note.hidden = !o.ta;
+  lv.ta.hidden = !o.ta; lv.note.hidden = !(o.ta || o.note); lv.note.textContent = o.note || 'Tidak disimpan, hanya untukmu.';
   lv.btn.hidden = !o.btn; lv.btn.setAttribute('aria-label', o.btn || '');
   lv.btn.innerHTML = (o.ic ? LI[o.ic] : '') + (o.txt ? '<span>' + o.txt + '</span>' : '');
   lv.btn.classList.toggle('round', !o.txt); lv.btn.onclick = o.fn || null;
 }
-const ldone = text => lset({ text, btn: 'Tutup', ic: 'check', fn: stopLat });
+const ldone = text => {
+  markDone(curKind);
+  if (!queue) return lset({ text, btn: 'Tutup', ic: 'check', fn: leaveEx });
+  const q = queue, nx = q.list[q.i + 1];
+  if (!nx) return lset({ text: 'Semua latihan fisik selesai. Kerja bagus.', btn: 'Tutup', ic: 'check', fn: leaveEx });
+  const tok = lTok, go = () => { if (queue === q && tok === lTok) { q.i++; openEx(nx); } };
+  lset({ text: text + ' Berikutnya: ' + NAMA[nx] + '.', btn: 'Lanjut', ic: 'next', fn: go });
+  lcount(8, tok).then(ok => { if (ok) go(); });
+};
 const lsleep = (ms, tok) => new Promise(r => setTimeout(() => r(tok === lTok), ms));
 function lcount(n, tok){
   return new Promise(res => {
@@ -1004,6 +1272,50 @@ async function runFisik(steps){
   }
   ldone('Selesai. Rasakan tubuhmu sekarang.');
 }
+const rep3 = a => [...a, ...a, ...a];
+const PANDU = {
+  n478: { cyc: 3, intro: 'Duduk tegak. Kalau terasa pusing, kembali bernapas biasa.', outro: 'Selesai. Napasmu terasa lebih pelan.',
+    steps: rep3([['Tarik napas lewat hidung.', 4], ['Tahan.', 7], ['Buang pelan lewat mulut.', 8]]) },
+  kotak: { cyc: 4, intro: 'Duduk tegak. Kalau terasa pusing, kembali bernapas biasa.', outro: 'Selesai. Napasmu terasa lebih pelan.',
+    steps: rep3([['Tarik napas.', 4], ['Tahan.', 4], ['Buang napas.', 4], ['Tahan.', 4]]) },
+  aman: { intro: 'Duduk nyaman. Berhenti kapan saja kalau tidak nyaman.', outro: 'Kamu bisa kembali ke tempat ini kapan saja.',
+    steps: [['Tutup mata kalau nyaman. Bayangkan tempat yang membuatmu merasa aman.', 12], ['Lihat sekelilingnya. Warna apa yang ada di sana?', 12], ['Dengarkan suaranya. Mungkin angin, air, atau sunyi.', 12], ['Rasakan udara dan permukaan di bawahmu.', 12], ['Tarik napas pelan. Kamu aman di tempat ini.', 12]] },
+  scan: { intro: 'Duduk atau berbaring dengan nyaman.', outro: 'Tubuhmu sudah lebih longgar.',
+    steps: [['Rasakan kepala dan kulit kepalamu.', 10], ['Lemaskan wajah: dahi, mata, rahang.', 10], ['Turunkan bahu dan lepaskan leher.', 10], ['Rasakan dada dan napasmu naik turun.', 10], ['Rasakan perut dan punggung bawah. Biarkan lemas.', 10], ['Rasakan kaki sampai ujung jari. Biarkan berat.', 10]] },
+  peluk: { intro: 'Lakukan dengan pelan. Berhenti kalau tidak nyaman.', outro: 'Kamu sudah merawat dirimu sebentar.',
+    steps: [['Silangkan lengan di dada, tangan di bawah bahu.', 8], ['Tepuk bahu kiri dan kanan bergantian, pelan-pelan.', 16], ['Tarik napas pelan sambil terus menepuk.', 12], ['Berhenti menepuk. Peluk dirimu sebentar.', 10]] },
+  mata: { intro: 'Duduk nyaman. Jauhkan layar dari wajahmu sebentar.', outro: 'Matamu sudah beristirahat.',
+    steps: [['Gosok kedua telapak tangan sampai hangat.', 8], ['Tutup mata, tempelkan telapak tangan di atasnya.', 12], ['Biarkan gelap. Lemaskan dahi dan alis.', 10], ['Buka mata pelan. Lihat jauh ke satu titik.', 8], ['Kedipkan mata beberapa kali.', 6]] },
+  minum: { intro: 'Siapkan segelas air di dekatmu.', outro: 'Terima kasih sudah memberi dirimu jeda.',
+    steps: [['Pegang gelasnya dengan dua tangan.', 8], ['Rasakan suhu gelasnya di telapak tanganmu.', 8], ['Minum seteguk pelan. Rasakan airnya di mulut.', 10], ['Telan pelan dan rasakan sampai ke perut.', 8], ['Tarik napas pelan.', 6]] },
+  perut: { cyc: 2, intro: 'Letakkan satu tangan di perut. Kalau terasa pusing, bernapas biasa.', outro: 'Selesai. Perutmu terasa lebih longgar.',
+    steps: [...rep3([['Tarik napas lewat hidung, biarkan perut mengembang.', 4], ['Buang pelan lewat mulut, perut mengempis.', 6]]), ['Tarik napas lewat hidung, biarkan perut mengembang.', 4], ['Buang pelan lewat mulut, perut mengempis.', 6]] },
+  dengar: { intro: 'Duduk diam. Tutup mata kalau nyaman.', outro: 'Kamu sudah hadir di sini, sekarang.',
+    steps: [['Dengarkan suara yang paling jauh.', 12], ['Sekarang suara yang paling dekat.', 12], ['Dengarkan tubuhmu: napas, mungkin detak jantung.', 12], ['Biarkan semua suara datang dan pergi.', 12]] }
+};
+async function runPandu(c){
+  const tok = lTok, cyc = c.cyc || c.steps.length;
+  lset({ text: c.intro });
+  if (!await lsleep(4200, tok)) return;
+  for (let i = 0; i < c.steps.length; i++) {
+    lset({ step: i % cyc, of: cyc, text: c.steps[i][0] });
+    if (!await lcount(c.steps[i][1], tok)) return;
+  }
+  ldone(c.outro);
+}
+const TAP = {
+  syukur: { outro: 'Terima kasih sudah memperhatikan hal baik, sekecil apa pun.',
+    steps: ['Sebutkan 1 hal kecil yang berjalan baik hari ini.', 'Sebutkan 1 orang atau hal yang membuatmu merasa terbantu.', 'Sebutkan 1 hal dari dirimu sendiri yang kamu hargai.'] },
+  warna: { outro: 'Kamu sudah memperhatikan sekelilingmu.',
+    steps: ['Cari 3 benda berwarna biru di sekitarmu.', 'Cari 3 benda berwarna hijau.', 'Cari 3 benda berwarna kuning atau oranye.', 'Cari 3 benda berwarna putih.'] },
+  afirmasi: { outro: 'Bawa kalimat ini bersamamu.',
+    steps: ['Baca pelan dalam hati, lalu tarik napas di setiap kalimat.', 'Aku boleh istirahat sebentar.', 'Perasaan ini akan berlalu.', 'Aku sudah berusaha sebaik yang aku bisa.', 'Aku cukup, apa adanya.'] }
+};
+function runTap(c, i){
+  if (i >= c.steps.length) return ldone(c.outro);
+  const last = i === c.steps.length - 1;
+  lset({ step: i, of: c.steps.length, text: c.steps[i], btn: last ? 'Selesai' : 'Lanjut', ic: last ? 'check' : 'next', fn: () => runTap(c, i + 1) });
+}
 function runTulis(){
   const tok = lTok;
   lset({ text: 'Tulis apa yang memenuhi pikiranmu.', ta: true, btn: 'Lepaskan', ic: 'wind', txt: 'Lepaskan', fn: async () => {
@@ -1014,18 +1326,25 @@ function runTulis(){
   } });
   setTimeout(() => { if (tok === lTok) lv.ta.focus(); }, 60);
 }
-function openLat(kind){
-  closeMenu();
+function openEx(kind){
+  closeMenu(); curKind = kind;
   if (kind === 'napas') return startNapas();
   lTok++; clearInterval(lTimer);
-  lat.classList.add('on');
-  if (kind === 'ground') runGround(0); else if (kind === 'otot') runOtot(); else if (kind === 'tulis') runTulis(); else runFisik(FISIK[kind]);
+  lat.classList.add('on'); Music.open(kind);
+  if (kind === 'ground') runGround(0); else if (kind === 'otot') runOtot(); else if (kind === 'tulis') runTulis(); else if (TAP[kind]) runTap(TAP[kind], 0); else if (PANDU[kind]) runPandu(PANDU[kind]); else runFisik(FISIK[kind]);
 }
-document.querySelectorAll('.lm-item').forEach(b => b.onclick = () => openLat(b.dataset.l));
+document.querySelectorAll('.lm-item').forEach(b => b.onclick = () => { queue = null; openEx(b.dataset.l); });
 const mItems = [...document.querySelectorAll('.lm-item')], PER = 6, MP = Math.ceil(mItems.length / PER);
 let mPage = 0;
+const TH = ['Napas', 'Hadir', 'Rawat', 'Gerak'];
 function renderMenu(){
-  mItems.forEach((b, i) => { b.hidden = Math.floor(i / PER) !== mPage; });
+  $('lm-title').textContent = TH[mPage] || '';
+  const dn = doneDay === today() ? done : [];
+  mItems.forEach((b, i) => {
+    b.hidden = Math.floor(i / PER) !== mPage;
+    const dk = dn.includes(b.dataset.l), nm = b.querySelector('b').textContent;
+    b.classList.toggle('done', dk); b.setAttribute('aria-label', dk ? nm + ', sudah selesai' : nm);
+  });
   $('lm-prev').disabled = mPage === 0; $('lm-next').disabled = mPage === MP - 1;
   $('lm-dots').innerHTML = Array.from({ length: MP }, (_, k) => '<i' + (k === mPage ? ' class="on"' : '') + '></i>').join('');
 }
@@ -1038,9 +1357,19 @@ document.addEventListener('keydown', e => { if (menu.classList.contains('on')) {
 renderMenu();
 $('breathBtn').onclick = () => { mPage = 0; renderMenu(); menu.classList.add('on'); };
 $('lm-x').onclick = closeMenu;
-$('lat-x').onclick = stopLat;
+/* keluar dari latihan: kembali ke daftar latihan di halaman tema yang sama, bukan ke beranda */
+function leaveEx(){ const dariAntrean = !!queue; stopNapas(); stopLat(); if (!dariAntrean) { renderMenu(); menu.classList.add('on'); } }
+/* putar semua latihan fisik, urut dari yang paling sedikit gerak sampai yang paling banyak gerak */
+const FISIK_URUT = ['mata', 'pijat', 'peluk', 'tangan', 'otot', 'leher', 'punggung', 'regang', 'berdiri', 'jalan', 'goyang'];
+const NAMA = { mata: 'Istirahat mata', pijat: 'Pijat', peluk: 'Peluk diri', tangan: 'Tangan & jari', otot: 'Relaksasi', leher: 'Leher & bahu', punggung: 'Punggung', regang: 'Regangan', berdiri: 'Berdiri kuat', jalan: 'Jalan pelan', goyang: 'Goyang tubuh' };
+function playFisik(){
+  if (!user) return;
+  closeMenu(); queue = { list: FISIK_URUT, i: 0 }; openEx(FISIK_URUT[0]);
+}
+$('playBtn').onclick = playFisik;
+$('lat-x').onclick = leaveEx;
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { const open = nap.classList.contains('on') || lat.classList.contains('on') || menu.classList.contains('on'); closeModal(); closeJ(); stopNapas(); stopLat(); closeMenu(); if (!open) document.body.classList.remove('cover'); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (nap.classList.contains('on') || lat.classList.contains('on')) { leaveEx(); return; } const open = menu.classList.contains('on'); closeModal(); closeJ(); closeMenu(); if (!open) document.body.classList.remove('cover'); } });
 
 function applyTheme(m){
   const r = document.documentElement;
